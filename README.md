@@ -9,7 +9,7 @@ snowflake分布式worker的workerID解决方案
 ```
 GET /snowflake/customer-id
 ```
-####### 返回
+- 返回
 ```
 {
     "id": 123
@@ -22,7 +22,7 @@ PUT /snowflake/customer-id
     "id": 123
 }
 ```
-####### 返回
+- 返回
 ```
 {
     "id": 123
@@ -35,7 +35,7 @@ DELETE /snowflake/customer-id
     "id": 123
 }
 ```
-####### 返回
+- 返回
 ```
 {
     "id": 123
