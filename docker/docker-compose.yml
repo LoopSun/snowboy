@@ -1,0 +1,12 @@
+snowboy:
+    image: registry.cmic.site:5000/sg/snowboy:latest
+    container_name: snowboy
+    environment:
+     - REDIS_HOST=10.153.115.14
+     - REDIS_PORT=6379
+     - REDIS_PASSWORD=redis-password
+     - USERNAME=root
+     - PASSWORD=changeme
+    restart: always
+    ports:
+     - 5000
