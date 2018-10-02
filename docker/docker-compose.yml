@@ -1,8 +1,8 @@
 snowboy:
-    image: registry.cmic.site:5000/sg/snowboy:latest
+    image: loopsun/snowboy:latest
     container_name: snowboy
     environment:
-     - REDIS_HOST=10.153.115.14
+     - REDIS_HOST=127.0.0.1
      - REDIS_PORT=6379
      - REDIS_PASSWORD=redis-password
      - USERNAME=root

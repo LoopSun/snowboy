@@ -41,3 +41,12 @@ DELETE /snowflake/customer-id
     "id": 123
 }
 ```
+4. Docker
+- 运行代码根目录的buildDocker.sh打包镜像
+```
+sudo ./buildDocker.sh
+```
+- 或者直接使用发布好的镜像
+```
+cd docker && docker-compose up -d
+```
