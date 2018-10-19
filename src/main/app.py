@@ -24,43 +24,55 @@ def hello_world():
 @auth.login_required
 def snowflake_customer_id():
     if request.method == "GET":
-        ret = get_customer_id()
+        data = request.args
+        # default namespace
+        # customer namespace
+        namespace = data.get("namespace") if data.get("namespace") else "default"
+        ret = get_customer_id(namespace)
         return jsonify(ret)
     elif request.method == "PUT":
         data = request.json
         customer_id = data.get("id")
-        id_key = "{}_{}".format(REDIS_USED_LIST_KEY, customer_id)
+        namespace = data.get("namespace") if data.get("namespace") else "default"
+        id_key = "{}_[{}]_{}".format(REDIS_USED_LIST_KEY, namespace, customer_id)
         REDIS_CLIENT.set(id_key, customer_id, 300)
         return jsonify(
             {
-                "id": customer_id
+                "id": customer_id,
+                "namespace": namespace
             }
         )
     elif request.method == "DELETE":
         data = request.json
         customer_id = data.get("id")
-        id_key = "{}_{}".format(REDIS_USED_LIST_KEY, customer_id)
+        namespace = data.get("namespace") if data.get("namespace") else "default"
+        id_key = "{}_[{}]_{}".format(REDIS_USED_LIST_KEY, namespace, customer_id)
         REDIS_CLIENT.delete(id_key)
         return jsonify(
             {
-                "id": customer_id
+                "id": customer_id,
+                "namespace": namespace
             }
         )
 
-def get_customer_id():
+
+def get_customer_id(namespace="default"):
     while True:
         randint_id = randint(0, MAX_CUSTOMER_ID)
-        id_key = "{}_{}".format(REDIS_USED_LIST_KEY, randint_id)
-        key_len = len(REDIS_CLIENT.keys("{}*".format(REDIS_USED_LIST_KEY)))
+        id_key = "{}_[{}]_{}".format(REDIS_USED_LIST_KEY, namespace, randint_id)
+        key_len = len(REDIS_CLIENT.keys("{}_[{}]*".format(REDIS_USED_LIST_KEY, namespace)))
         if key_len > 1024:
             ret = {
-                    "id": None
+                    "id": None,
+                    "namespace": namespace,
+                    "reason": "Pool is full."
                 }
             return ret
 
         if not REDIS_CLIENT.get(id_key):
             ret = {
-                    "id": randint_id
+                    "id": randint_id,
+                    "namespace": namespace
                 }
             REDIS_CLIENT.set(id_key, randint_id, 300)
             return ret
